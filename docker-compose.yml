@@ -1,22 +1,15 @@
 version: '3.4'
 services:
 
-  duckling-server:
-    image: rasa/duckling:latest
-    ports:
-    - 8000:8000
-    networks:
-    - all
-
-  rasa:
+  rasa-server:
     image: alpine/git:latest 
     working_dir: /app
     build: "./"
     restart: always
     volumes:
-    - ./actions:/app/actions
-    - ./data:/app/data 
-    - ./models:/app/models
+    - ./actions: /app/actions
+    - ./data: /app/data 
+    - ./tests: /app/tests
     command: bash -c "rm -rf models/* && rasa train && rasa run --enable-api --cors \"*\" --debug"
     ports:
     - '5006:5005'
@@ -24,14 +17,14 @@ services:
     networks:
     - all
 
-  rasa-actions:
+  rasa-actions-server:
     image: alpine/git:latest 
     working_dir: /app
     build: "./"
     restart: always
     volumes:
-    - ./actions:/app/actions
-    - ./utils:/app/utils
+    - ./actions: /app/actions
+    - ./utils: /app/utils
     command: bash -c "rasa run actions"
     ports:
     - '5055:5055'
